@@ -1,0 +1,31 @@
+apiVersion: skaffold/v1alpha2
+kind: Config
+build:
+  tagPolicy:
+    envTemplate:
+      template: "{{.DOCKER_REGISTRY}}/q13117/voting-app-worker-dotnet:{{.VERSION}}"
+  artifacts:
+  - imageName: changeme
+    workspace: .
+    docker: {}
+  local: {}
+deploy:
+  kubectl:
+    manifests:
+profiles:
+- name: dev
+  build:
+    tagPolicy:
+      envTemplate:
+        template: "{{.DOCKER_REGISTRY}}/q13117/voting-app-worker-dotnet:{{.DIGEST_HEX}}"
+    artifacts:
+    - docker: {}
+    local: {}
+  deploy:
+    helm:
+      releases:
+      - name: voting-app-worker-dotnet
+        chartPath: charts/voting-app-worker-dotnet
+        setValueTemplates:
+          image.repository: "{{.DOCKER_REGISTRY}}/q13117/voting-app-worker-dotnet"
+          image.tag: "{{.DIGEST_HEX}}"
