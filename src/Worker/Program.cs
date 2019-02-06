@@ -90,7 +90,8 @@ namespace Worker
                 }
             }
 
-            Console.Error.WriteLine("Connected to db");
+            Console.Error.WriteLine("Connected to PostGreSQL db");
+            sh "CI=true DISPLAY=:99 npm test"
 
             var command = connection.CreateCommand();
             command.CommandText = @"CREATE TABLE IF NOT EXISTS votes (
